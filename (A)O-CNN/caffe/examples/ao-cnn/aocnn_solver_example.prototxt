@@ -1,0 +1,30 @@
+# The train/test net protocol buffer definition
+net: "examples/ao-cnn/cls_5.prototxt"
+
+# run the forward pass for all validation data to get the loss
+test_iter: 405
+
+# Carry out validation after all training data were processed.
+test_interval: 1896
+
+# The base learning rate, momentum and the weight decay of the network.
+base_lr: 0.1 
+momentum: 0.9 
+weight_decay: 0.0005
+
+lr_policy: "step"
+gamma: 0.1
+stepsize: 18960
+
+# Display every 100 iterations
+display: 1896
+
+# The maximum number of iterations
+max_iter: 189600
+
+# snapshot intermediate results
+snapshot: 18960
+snapshot_prefix: "/path/to/folder/the/snapshots/will/be/saved"
+
+# solver mode: CPU or GPU
+solver_mode: GPU
