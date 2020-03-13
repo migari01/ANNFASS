@@ -1,23 +1,3 @@
-'''============================================================================
-    The getPixelColorFromTextureFromOBJ takes a PLY file with the sampled 
-    points and finds their colour using the textured OBJ file of the mesh
-    they were sampled from.
-
-    Copyright (C) 2020  Pratheba Selvaraju
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <https://www.gnu.org/licenses/>.
-============================================================================'''
 import PIL
 from PIL import Image, ImageFile
 from PIL import ImageFilter
@@ -122,13 +102,13 @@ class ColorFromTexture:
                         c.kd["r"] = float(data[1])
                         c.kd["g"] = float(data[2])
                         c.kd["b"] = float(data[3])
-                        c.kd["a"] = float(data[4])
+                        #c.kd["a"] = float(data[4])
                     if line.startswith("Ka "):
                         data = line.split()
                         c.ka["r"] = float(data[1])
                         c.ka["g"] = float(data[2])
                         c.ka["b"] = float(data[3])
-                        c.ka["a"] = float(data[4])
+                        #c.ka["a"] = float(data[4])
 #                    if line.startswith("Ks "):
 #                        data = line.split()
 #                        ks.r = (float)data[1]
@@ -148,7 +128,7 @@ class ColorFromTexture:
                         c.trans["r"] = float(data[1])
                         c.trans["g"] = float(data[2])
                         c.trans["b"] = float(data[3])
-                        c.trans["a"] = float(data[4])
+                        #c.trans["a"] = float(data[4])
 #                    if line.startswith("Ni "):
 #                        ni = (float)(line.split()[1])
                     if line.startswith("map_Kd "):
@@ -203,7 +183,7 @@ class ColorFromTexture:
         count = 0
         for line in fread:
             #print(line)
-            if count < 12:
+            if count < 11:
                 count += 1
                 continue
             line = line.strip()
@@ -613,10 +593,10 @@ class ColorFromTexture:
 
     def writePLY(self, destFolder):
         fread = open(os.path.join(self.PLYFolder, self.fname+".ply"),'r')
-        f = open(os.path.join(destFolder, self.fname+'.ply'),'w')
+        f = open(os.path.join(destFolder, self.fname+'_coloured.ply'),'w')
         f.write("ply\n")
         f.write("format ascii 1.0\n")
-        f.write("element vertex 30000\n")
+        f.write("element vertex "+str(len(self.P_color))+"\n")
         f.write("property float x\n")
         f.write("property float y\n")
         f.write("property float z\n")
@@ -627,19 +607,19 @@ class ColorFromTexture:
         f.write("property uchar green\n")
         f.write("property uchar blue\n")
         f.write("property uchar alpha\n")
-        f.write("element face 0\n")
-        f.write("property list uchar int vertex_indices\n")
+        #f.write("element face 0\n")
+        #f.write("property list uchar int vertex_indices\n")
         f.write("end_header\n")
         index= 0
         count = 0
         for line in fread:
-            if count < 12:
+            if count < 11:
                 count += 1
                 continue
             line = line.strip()
             line = line.rsplit(' ',1)[0]
             line = line.strip()
-            #print(self.P_color)
+            #print(self.P_color[index])
             f.write(line +" "+str(self.P_color[index][0])+" "+str(self.P_color[index][1])+" "+str(self.P_color[index][2])+" "+str(self.P_color[index][3])+"\n")
             index += 1
             #print(index)
@@ -649,7 +629,7 @@ class ColorFromTexture:
 
 
 def getColorFromTextureOfAFile(filename, objFolder, textureFolder, PLYFolder, MTLFolder, destinationFolder):
-    print(filename)
+    #print(filename)
     ctex = ColorFromTexture(filename, objFolder, textureFolder, PLYFolder, MTLFolder)
     #print(ctex)
     ctex.run()
