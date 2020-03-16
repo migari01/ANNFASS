@@ -48,11 +48,29 @@ If you want to run experiments **only** with the spatial coordinates and normals
 
  List of files:
 `python getPixelColorFromTextureFromOBJ.py list path/to/file/listing/filenames/to/process path/to/obj/file/directory path/to/texture/folder/directory path/to/ply/file/directory path/to/mtl/file/directory path/to/save/coloured/ply`
-**Note** The obj, mtl, ply files and the texture folder must have the same name as the filename (or listed filenames) parameter.
+
+ **Note** The obj, mtl, ply files and the texture folder must have the same name as the filename (or listed filenames) parameter.
+
+3. The last common step, for both methods, is the splitting in train, validation and test sets.
+
 ### 2.1 &nbsp; (A)O-CNN
-Details will be added soon.
+1. Firstly, the point clouds need to be converted in the form (A)O-CNN uses in its implementation. For converting point clouds we use functions provided from the (A)O-CNN sampling method, [virtualscanner](https://github.com/wang-ps/O-CNN/tree/master/virtual_scanner). Copy our virtualscanner scripts into directory `virtual_scanner/cpp/virtualscanner/src` and build the project again. For converting point clouds with no colour information use the `main.cpp` script, while for coloured point clouds use `write_coloured_point_clouds.cpp`.
+
+2. Then, all point clouds need to be converted to (a)octrees and saved in an [LMDB](http://www.lmdb.tech/doc/) database. To do that simply follow the instructions provided here: https://github.com/microsoft/O-CNN#31--o-cnn-for-shape-classification
+In the case of using aoctrees, enable options `--adaptive 1` and `--node_dis 1`, when converting point clouds.
+
+3. After these steps are completed you need to change the data source path in the prototxt files with the network's architecture, to point to the location the [LMDB](http://www.lmdb.tech/doc/) for each split. Also, the number of input channels need to be set according to the features used, along with the number of output neurons.
+
+To start the (A)O-CNN training/testing process you can follow the instructions provided by [Caffe](http://caffe.berkeleyvision.org/tutorial/interfaces.html).
+
 ### 2.2 &nbsp; PointNet++
-Details will be added soon.
+1. The point clouds for each split need to be saved in [HDF5](https://www.hdfgroup.org/solutions/hdf5/) format, to do that you can use the `pts2hdf5.py` script.
+
+    **Note** The [HDF5](https://www.hdfgroup.org/solutions/hdf5/) files need to be saved in the same directory, in respective subdirectories (train,test and val). In each subdirectory, along with the data, a file (`all_files.txt`) listing the names of the files to use in each phase.
+
+2. Change line 39 in script `Indoor3DSemSegLoader.py` so that `BASE_DIR` points to the directory with the split data.
+
+After these changes are made you are ready to use PointNet++.
 
 ***Our work uses implementations from the following repositories:***
 

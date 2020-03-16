@@ -36,7 +36,7 @@ def _load_data_file(name):
 class Indoor3DSemSeg(data.Dataset):
     def __init__(self, num_points,use_colour,split=""):
         super().__init__()
-        BASE_DIR="/media/maria/BigData1/Maria/new_data_colours_and_labels_updated/dataset/30000Points/segmentation/562"
+        BASE_DIR="path/to/directory/of/split/data/directories"
         self.num_points = num_points
 
         all_files = _get_data_files(os.path.join(BASE_DIR,split, "all_files.txt"))
